@@ -1,19 +1,74 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import starWarsLogo from "../../img/pngwing.com.png";
+import { Context } from "../store/appContext";
 
 export const Navbar = () => {
-	return (
-		<nav className="navbar navbar-light bg-light">
-			<div className="container">
-				<Link to="/">
-					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
-				</Link>
-				<div className="ml-auto">
-					<Link to="/demo">
-						<button className="btn btn-primary">Check the Context in action</button>
-					</Link>
-				</div>
-			</div>
-		</nav>
-	);
+  const { store, actions } = useContext(Context);
+
+  return (
+    <nav className="navbar navbar-light bg-light sticky-top">
+      <div className="container">
+        <Link to="/">
+          <img style={{ width: "100px" }} src={starWarsLogo}></img>
+        </Link>
+        <div className="d-flex">
+          {store.token && (
+            <div className="dropdown p-2">
+              <button
+                className="btn btn-secondary dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Favorites {store.favorites.length}
+              </button>
+              <ul className="dropdown-menu dropdown-menu-end">
+                {!(store.favorites.length == 0) ? (
+                  store.favorites.map((favorite) => (
+                    <li key={favorite.id} className="d-flex flex-nowrap p-2">
+                      <span className="dropdown-item">{favorite.name}</span>
+                      <button
+                        className="btn-dropdown"
+                        onClick={(e) =>
+                          actions.deleteFavorites(
+                            favorite.character_id,
+                            favorite.planet_id,
+                            favorite.vehicle_id
+                          )
+                        }
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-center">No favorites</li>
+                )}
+              </ul>
+            </div>
+          )}
+
+          <div className="p-2">
+            {!store.token ? (
+              <Link to="/login">
+                <button className="btn btn-dark">Log In</button>
+              </Link>
+            ) : (
+              <Link to="/login">
+                <button
+                  onClick={() => actions.logout()}
+                  className="btn btn-dark"
+                >
+                  Logout
+                </button>
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
 };
