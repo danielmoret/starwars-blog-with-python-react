@@ -15,8 +15,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           initial: "white",
         },
       ],
-      urlBase:
-        "https://3001-4geeksacade-reactflaskh-0nazwprms7e.ws-us75.gitpod.io",
+      urlBase: `${process.env.BACKEND_URL}`,
       favorites: JSON.parse(localStorage.getItem("favorites")) || [],
       characters: JSON.parse(localStorage.getItem("characters")) || [],
       planets: JSON.parse(localStorage.getItem("planets")) || [],
